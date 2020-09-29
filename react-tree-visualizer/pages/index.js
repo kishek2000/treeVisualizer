@@ -101,20 +101,25 @@ function Node({ nodeCoordinates, keyValue }) {
             rotation={nodeCoordinates.pDeg}
             distance={nodeCoordinates.pDist}
             coordinates={{ x: nodeCoordinates.p.x, y: nodeCoordinates.p.y }}
+            x={nodeCoordinates.x}
+            y={nodeCoordinates.y}
           />
         )}
-        {console.log("degrees to closest: ", nodeCoordinates.pDeg)}
       </>
     );
   }
   return <div />;
 }
 
-function Line({ rotation, distance, coordinates }) {
-  if (rotation < 0) {
-    rotation += 360;
-    console.log("new rotation: ", rotation);
+function Line({ rotation, distance, coordinates, x, y }) {
+  console.log("received coords ", coordinates, { x, y });
+  console.log("received rotation ", rotation);
+  if (rotation < 0 && coordinates.x > x && coordinates.y < y) {
+    rotation += 180;
+  } else if (coordinates.x > x && coordinates.y > y) {
+    rotation -= 180;
   }
+  console.log("rendering rotation of ", rotation);
   return (
     <div
       style={{
@@ -125,7 +130,7 @@ function Line({ rotation, distance, coordinates }) {
         position: "absolute",
         top: coordinates.y,
         left: coordinates.x,
-        transformOrigin: "top left",
+        transformOrigin: rotation < 180 ? "top left" : "top right",
       }}
     />
   );
